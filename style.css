@@ -11,32 +11,31 @@ body {
 #anime-list-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Default: 2 kolom */
-    
-    row-gap: 60px;   
-    column-gap: 20px; 
-    
+
+    row-gap: 60px;
+    column-gap: 20px;
+
     max-width: 900px; /* Lebar maksimum container */
     width: 100%;
 }
 
-/* PENTING: Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
-/* Ini memastikan 2 kolom dipertahankan pada lebar seperti 700-720px (piksel fisik) */
-@media (max-width: 350px) { /* Ubah menjadi 1 kolom HANYA di layar sangat sempit (misal: potret ponsel paling kecil) */
+/* Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
+@media (max-width: 350px) { /* Ubah menjadi 1 kolom HANYA di layar sangat sempit */
     #anime-list-container {
-        grid-template-columns: repeat(1, 1fr); 
-        row-gap: 60px; 
+        grid-template-columns: repeat(1, 1fr);
+        row-gap: 60px;
     }
 }
 
 .anime-item {
-    background-color: #4f4f4f; 
-    border: 1px solid #666; 
+    background-color: #4f4f4f;
+    border: 1px solid #666;
     padding: 15px;
     text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     height: 100%;
     justify-content: space-between;
@@ -44,14 +43,15 @@ body {
 
 .anime-thumbnail {
     width: 100%;
-    max-width: 200px;
-    height: 280px;
-    object-fit: contain;
+    /* Mengatur ukuran maksimum yang paling mungkin agar tidak terpotong */
+    max-width: 250px; /* Coba 130px (sebelumnya 100px), ini adalah ukuran maksimal yang mungkin muat */
+    height: 400px; /* Tinggi disesuaikan agar proporsional dengan lebar baru */
+    object-fit: contain; /* Pastikan gambar tidak terdistorsi dan seluruhnya terlihat */
     margin-bottom: 10px;
 }
 
 .anime-title {
-    color: #f0f0f0; 
+    color: #f0f0f0;
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 5px;
@@ -62,7 +62,7 @@ body {
 }
 
 .anime-genre {
-    color: #bbb; 
+    color: #bbb;
     font-size: 0.9em;
     margin-top: auto;
 }
