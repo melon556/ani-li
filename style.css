@@ -1,0 +1,68 @@
+body {
+    font-family: sans-serif;
+    background-color: #202020;
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    color: #f0f0f0;
+}
+
+#anime-list-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Default: 2 kolom */
+    
+    row-gap: 60px;   
+    column-gap: 20px; 
+    
+    max-width: 900px; /* Lebar maksimum container */
+    width: 100%;
+}
+
+/* PENTING: Media Query untuk 1 kolom hanya berlaku di lebar sangat kecil */
+/* Ini memastikan 2 kolom dipertahankan pada lebar seperti 1604px (piksel fisik) */
+@media (max-width: 480px) { /* Ubah menjadi 1 kolom HANYA di layar sangat sempit (misal: potret ponsel kecil) */
+    #anime-list-container {
+        grid-template-columns: repeat(1, 1fr); 
+        row-gap: 60px; 
+    }
+}
+
+.anime-item {
+    background-color: #4f4f4f; 
+    border: 1px solid #666; 
+    padding: 15px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); 
+    border-radius: 8px;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.anime-thumbnail {
+    width: 100%;
+    max-width: 200px;
+    height: 280px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.anime-title {
+    color: #f0f0f0; 
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.anime-genre {
+    color: #bbb; 
+    font-size: 0.9em;
+    margin-top: auto;
+}
