@@ -1,10 +1,22 @@
+html, body {
+    box-sizing: border-box; /* Pastikan padding dan border termasuk dalam lebar/tinggi elemen */
+    margin: 0; /* Hapus margin default browser */
+    padding: 0; /* Hapus padding default browser */
+    width: 100%; /* Pastikan body mengambil 100% lebar viewport */
+    overflow-x: hidden; /* Ini akan mencegah scroll horizontal jika ada konten yang meluber */
+}
+
+*, *::before, *::after {
+    box-sizing: inherit; /* Terapkan box-sizing ke semua elemen */
+}
+
 body {
     font-family: sans-serif;
     background-color: #202020;
-    margin: 20px;
+    /* margin: 20px; // Dihapus karena sudah ada di html, body {margin:0; padding:0;} */
+    padding: 20px; /* Padding ini untuk jarak konten dari tepi layar */
     display: flex;
     justify-content: center;
-    padding: 20px;
     color: #f0f0f0;
 }
 
@@ -12,11 +24,11 @@ body {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Default: 2 kolom */
 
-    row-gap: 60px;
+    row-gap: 30px;
     column-gap: 20px;
 
     max-width: 900px; /* Lebar maksimum container */
-    width: 100%;
+    width: 100%; /* Pastikan container mengambil 100% lebar yang tersedia */
 }
 
 /* Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
@@ -43,9 +55,9 @@ body {
 
 .anime-thumbnail {
     width: 100%;
-    /* Mengatur ukuran maksimum yang paling mungkin agar tidak terpotong */
-    max-width: 250px; /* Coba 130px (sebelumnya 100px), ini adalah ukuran maksimal yang mungkin muat */
-    height: 400px; /* Tinggi disesuaikan agar proporsional dengan lebar baru */
+    /* Mengurangi ukuran gambar lebih kecil lagi */
+    max-width: 250px; /* Dikurangi dari 130px menjadi 110px */
+    height: 300px; /* Dikurangi dari 180px menjadi 160px */
     object-fit: contain; /* Pastikan gambar tidak terdistorsi dan seluruhnya terlihat */
     margin-bottom: 10px;
 }
