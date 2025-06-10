@@ -1,20 +1,20 @@
 html, body {
-    box-sizing: border-box; /* Pastikan padding dan border termasuk dalam lebar/tinggi elemen */
-    margin: 0; /* Hapus margin default browser */
-    padding: 0; /* Hapus padding default browser */
-    width: 100%; /* Pastikan body mengambil 100% lebar viewport */
-    overflow-x: hidden; /* Ini akan mencegah scroll horizontal jika ada konten yang meluber */
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
 }
 
 *, *::before, *::after {
-    box-sizing: inherit; /* Terapkan box-sizing ke semua elemen */
+    box-sizing: inherit;
 }
 
 body {
     font-family: sans-serif;
     background-color: #202020;
-    /* margin: 20px; // Dihapus karena sudah ada di html, body {margin:0; padding:0;} */
-    padding: 1px; /* Padding ini untuk jarak konten dari tepi layar */
+    padding: 20px; /* Padding ini untuk jarak konten dari tepi layar */
+    padding-top: 20px; /* Tambahan jarak dari atas */
     display: flex;
     justify-content: center;
     color: #f0f0f0;
@@ -22,17 +22,17 @@ body {
 
 #anime-list-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Default: 2 kolom */
+    grid-template-columns: repeat(2, 1fr); /* Default: 2 kolom (setiap kolom 1/2 dari lebar container) */
 
-    row-gap: 30px;
-    column-gap: 15px;
+    row-gap: 60px;
+    column-gap: 20px;
 
-    max-width: 900px; /* Lebar maksimum container */
-    width: 100%; /* Pastikan container mengambil 100% lebar yang tersedia */
+    max-width: 900px;
+    width: 100%; /* Memastikan container mengambil 100% lebar yang tersedia */
 }
 
 /* Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
-@media (max-width: 350px) { /* Ubah menjadi 1 kolom HANYA di layar sangat sempit */
+@media (max-width: 350px) {
     #anime-list-container {
         grid-template-columns: repeat(1, 1fr);
         row-gap: 60px;
@@ -55,10 +55,9 @@ body {
 
 .anime-thumbnail {
     width: 100%;
-    /* Mengurangi ukuran gambar lebih kecil lagi */
-    max-width: 250px; /* Dikurangi dari 130px menjadi 110px */
-    height: 200px; /* Dikurangi dari 180px menjadi 160px */
-    object-fit: contain; /* Pastikan gambar tidak terdistorsi dan seluruhnya terlihat */
+    max-width: 110px; /* Ukuran gambar saat ini */
+    height: 160px;
+    object-fit: contain;
     margin-bottom: 10px;
 }
 
