@@ -19,9 +19,9 @@ body {
     width: 100%;
 }
 
-/* PENTING: Media Query untuk 1 kolom hanya berlaku di lebar sangat kecil */
-/* Ini memastikan 2 kolom dipertahankan pada lebar seperti 1604px (piksel fisik) */
-@media (max-width: 480px) { /* Ubah menjadi 1 kolom HANYA di layar sangat sempit (misal: potret ponsel kecil) */
+/* PENTING: Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
+/* Ini memastikan 2 kolom dipertahankan pada lebar seperti 700-720px (piksel fisik) */
+@media (max-width: 350px) { /* Ubah menjadi 1 kolom HANYA di layar sangat sempit (misal: potret ponsel paling kecil) */
     #anime-list-container {
         grid-template-columns: repeat(1, 1fr); 
         row-gap: 60px; 
