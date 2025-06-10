@@ -13,8 +13,7 @@ html, body {
 body {
     font-family: sans-serif;
     background-color: #202020;
-    padding: 20px; /* Padding ini untuk jarak konten dari tepi layar */
-    padding-top: 20px; /* Tambahan jarak dari atas */
+    padding: 20px 5px; /* Diubah: padding atas/bawah 20px, kiri/kanan 5px */
     display: flex;
     justify-content: center;
     color: #f0f0f0;
@@ -22,20 +21,20 @@ body {
 
 #anime-list-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Default: 2 kolom (setiap kolom 1/2 dari lebar container) */
+    grid-template-columns: repeat(2, 1fr);
 
-    row-gap: 60px;
-    column-gap: 20px;
+    row-gap: 10px;   /* Diubah dari 20px menjadi 10px (setengahnya) */
+    column-gap: 10px;
 
     max-width: 900px;
-    width: 100%; /* Memastikan container mengambil 100% lebar yang tersedia */
+    width: 100%;
 }
 
 /* Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
 @media (max-width: 350px) {
     #anime-list-container {
         grid-template-columns: repeat(1, 1fr);
-        row-gap: 60px;
+        row-gap: 10px; /* Diubah dari 20px menjadi 10px (setengahnya) */
     }
 }
 
@@ -55,25 +54,27 @@ body {
 
 .anime-thumbnail {
     width: 100%;
-    max-width: 110px; /* Ukuran gambar saat ini */
-    height: 160px;
+    max-width: 180px; /* Diubah dari 110px menjadi 150px */
+    height: 200px; /* Diubah dari 160px menjadi 180px */
     object-fit: contain;
     margin-bottom: 10px;
 }
 
 .anime-title {
     color: #f0f0f0;
-    font-size: 1.2em;
+    font-size: 0.9em;
     font-weight: bold;
     margin-bottom: 5px;
     flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
+    word-break: break-word;
 }
 
 .anime-genre {
     color: #bbb;
-    font-size: 0.9em;
+    font-size: 0.8em;
     margin-top: auto;
+    word-break: break-word;
 }
