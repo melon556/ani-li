@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return finalColumns.map(col => (col || '').trim());
     }
 
-    function createAnimeElement(animeName, genre, originalLink, driveLabel) {
+    function createAnimeElement(animeName, genre, originalLink, driveLabel, typeLabel) {
         let fileId = '';
         let thumbnailUrl = 'https://placehold.co/200x280/cccccc/333333?text=Gambar+Tidak+Tersedia';
 
@@ -47,6 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
         genreDiv.classList.add('anime-genre');
         genreDiv.textContent = genre;
 
+        const typeDiv = document.createElement('div');
+        typeDiv.classList.add('anime-type');
+        typeDiv.textContent = typeLabel || '';
+
         const driveDiv = document.createElement('div');
         driveDiv.classList.add('anime-drive');
         driveDiv.textContent = driveLabel || '';
@@ -54,6 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         animeItem.appendChild(thumbnailImg);
         animeItem.appendChild(titleDiv);
         animeItem.appendChild(genreDiv);
+        animeItem.appendChild(typeDiv);
         animeItem.appendChild(driveDiv);
 
         return animeItem;
@@ -61,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderAnimeList(filteredList) {
         animeListContainer.innerHTML = '';
-        filteredList.forEach(({ animeName, genre, originalLink, driveLabel }) => {
-            const animeEl = createAnimeElement(animeName, genre, originalLink, driveLabel);
+        filteredList.forEach(({ animeName, genre, originalLink, driveLabel, typeLabel }) => {
+            const animeEl = createAnimeElement(animeName, genre, originalLink, driveLabel, typeLabel);
             animeListContainer.appendChild(animeEl);
         });
     }
@@ -74,8 +79,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const filtered = allAnimeData.filter(({ animeName, genre }) =>
-            animeName.toLowerCase().includes(query) || genre.toLowerCase().includes(query)
+        const filtered = allAnimeData.filter(({ animeName, genre, typeLabel }) =>
+            animeName.toLowerCase().includes(query) ||
+            genre.toLowerCase().includes(query) ||
+            typeLabel.toLowerCase().includes(query)
         );
         renderAnimeList(filtered);
     }
@@ -97,13 +104,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             rows.forEach(row => {
                 const columns = parseCsvLine(row);
-                if (columns.length >= 5) {
+                if (columns.length >= 6) {
                     const animeName = columns[1];
                     const genre = columns[2];
                     const originalLink = columns[3];
                     const driveLabel = columns[4];
+                    const typeLabel = columns[5];
                     if (animeName && genre) {
-                        parsedData.push({ animeName, genre, originalLink, driveLabel });
+                        parsedData.push({ animeName, genre, originalLink, driveLabel, typeLabel });
                     }
                 }
             });
