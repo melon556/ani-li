@@ -13,28 +13,38 @@ html, body {
 body {
     font-family: sans-serif;
     background-color: #202020;
-    padding: 20px 5px; /* Diubah: padding atas/bawah 20px, kiri/kanan 5px */
+    padding: 20px 5px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     color: #f0f0f0;
+}
+
+#search-input {
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 1px solid #444;
+    padding: 10px 14px;
+    margin: 0 10px 20px 10px;
+    width: calc(100% - 20px);
+    font-size: 1em;
+    border-radius: 6px;
+    display: block;
 }
 
 #anime-list-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-
-    row-gap: 10px;   /* Diubah dari 20px menjadi 10px (setengahnya) */
+    row-gap: 10px;
     column-gap: 10px;
-
     max-width: 900px;
     width: 100%;
 }
 
-/* Media Query untuk 1 kolom hanya berlaku di lebar SANGAT kecil */
 @media (max-width: 350px) {
     #anime-list-container {
         grid-template-columns: repeat(1, 1fr);
-        row-gap: 10px; /* Diubah dari 20px menjadi 10px (setengahnya) */
+        row-gap: 10px;
     }
 }
 
@@ -54,8 +64,8 @@ body {
 
 .anime-thumbnail {
     width: 100%;
-    max-width: 180px; /* Diubah dari 110px menjadi 150px */
-    height: 200px; /* Diubah dari 160px menjadi 180px */
+    max-width: 180px;
+    height: 200px;
     object-fit: contain;
     margin-bottom: 10px;
 }
@@ -76,5 +86,12 @@ body {
     color: #bbb;
     font-size: 0.8em;
     margin-top: auto;
+    word-break: break-word;
+}
+
+.anime-drive {
+    color: #76dfff;
+    font-size: 0.8em;
+    margin-top: 4px;
     word-break: break-word;
 }
