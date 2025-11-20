@@ -428,17 +428,12 @@ backBtn.onclick = ()=> detailEl.style.display='none';
   statusEl.textContent='Memuat...';
   const g = await fetchSheet();
   const data = parseSheet(g);
-  // store flat items for search
-  allItems = data.slice();
   indexByGenre = buildIndex(data);
   statusEl.textContent='Selesai';
 
   // Render genres: show GENRES_ORDER first, then any additional genres found in sheet (alphabetical)
   const extraGenres = Object.keys(indexByGenre).filter(g => !GENRES_ORDER.includes(g) && (indexByGenre[g] || []).length > 0).sort((a,b)=> a.localeCompare(b, undefined, {sensitivity:'base'}));
   const allGenres = [...GENRES_ORDER, ...extraGenres];
-  // cache ALL_GENRES so search clearing can restore
-  ALL_GENRES = allGenres.slice();
-
   allGenres.forEach(g=>{
     container.appendChild(renderGenre(g, indexByGenre[g]||[]));
   });
