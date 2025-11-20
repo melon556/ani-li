@@ -1,16 +1,408 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Anime</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Anime List</title>
+<style>
+  :root{
+    --bg:#0f0f10;
+    --card:#161616;
+    --muted:#a8a8a8;
+    --accent:#e5e5e5;
+    --pill-bg:#222;
+    --console-bg: rgba(0,0,0,0.85);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:linear-gradient(180deg,var(--bg),#080808);
+    color:var(--accent);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:18px;
+  }
+
+  header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  header h1{
+    margin:0;
+    font-size:22px;
+    font-weight:600;
+  }
+  header .small{
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .genre-block{
+    margin-bottom:22px;
+  }
+  .genre-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .genre-title{
+    font-size:18px;
+    font-weight:600;
+  }
+  .genre-actions{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .open-genre-btn{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--accent);
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+  }
+
+  .thumb-row{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    padding-left:2px;
+    /* allow custom scrollbar styling */
+    scrollbar-width: thin;
+  }
+  /* visible styled scrollbar for thumb rows (webkit) */
+  .thumb-row::-webkit-scrollbar{ height:10px; }
+  .thumb-row::-webkit-scrollbar-track{ background: rgba(150,150,150,0.15); border-radius:6px; }
+  .thumb-row::-webkit-scrollbar-thumb{ background: rgba(200,200,200,0.35); border-radius:6px; }
+  .thumb-row::-webkit-scrollbar-thumb:hover{ background: rgba(220,220,220,0.55); }
+  .thumb-item{
+    min-width:140px;
+    max-width:140px;
+    flex:0 0 auto;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    align-items:flex-start;
+  }
+  .thumb-item img{
+    width:140px;
+    height:180px;
+    object-fit:cover;
+    border-radius:10px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.6);
+    display:block;
+  }
+  .thumb-item .title{
+    font-size:13px;
+    line-height:1.1;
+    color:var(--accent);
+    width:140px;
+    white-space:normal;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .thumb-item .meta{
+    font-size:12px;
+    color:var(--muted);
+  }
+
+  .detail-view{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,0.8), rgba(0,0,0,0.95));
+    display:none;
+    padding:18px;
+    overflow:auto;
+    z-index:80;
+  }
+  .detail-top{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:18px;
+  }
+  .back-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:40px;
+    height:40px;
+    border-radius:8px;
+    background:#111;
+    border:1px solid rgba(255,255,255,0.04);
+    cursor:pointer;
+    font-weight:700;
+  }
+  .detail-title{
+    font-size:20px;
+    font-weight:700;
+  }
+
+  .list-item{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:12px;
+    border-radius:12px;
+    margin-bottom:12px;
+    border:1px solid rgba(255,255,255,0.02);
+  }
+  .list-item img{
+    width:90px;
+    height:120px;
+    object-fit:cover;
+    border-radius:8px;
+  }
+
+  .muted{
+    color:var(--muted);
+    font-size:14px;
+  }
+
+  .console-toggle{display:none;}
+  .console-panel{display:none;}
+  .console-body{
+    background:rgba(0,0,0,0.2);
+    border-radius:6px;
+    padding:8px;
+    flex:1;
+    overflow:auto;
+  }
+  .console-line{
+    margin:0 0 6px 0;
+    white-space:pre-wrap;
+    word-break:break-word;
+    opacity:0.95;
+  }
+
+</style>
 </head>
 <body>
-    <div id="search-bar-container">
-        <input type="text" id="search-input" placeholder="Cari judul, genre, atau tipe...">
+  <header>
+    <div>
+      <h1>Anime List</h1>
+      
     </div>
-    <div id="anime-list-container"></div>
-    <script src="script.js"></script>
+    <div class="small muted" id="status">Memuat data...</div>
+  </header>
+
+  <main id="container"></main>
+
+  <div id="detail" class="detail-view" aria-hidden="true">
+    <div class="detail-top">
+      <button class="back-btn" id="backBtn">&larr;</button>
+      <div>
+        <div class="detail-title" id="detailGenre">Genre</div>
+        <div class="muted" id="detailCount"></div>
+      </div>
+    </div>
+    <div id="detailList"></div>
+  </div>
+
+  <button class="console-toggle" id="consoleToggle">Console</button>
+  <div class="console-panel" id="consolePanel" aria-hidden="true">
+    <div class="console-header">
+      <div style="font-weight:700">KONSOL</div>
+      <div class="muted">Log aktivitas</div>
+    </div>
+    <div class="console-body" id="consoleBody"></div>
+  </div>
+
+<script>
+/* FULL JAVASCRIPT AFTER FIXES */
+const SHEET_ID = "1Ou35JFZw2rlLzMVBZZsadfpHYi0vMHFXUQxImJRFG74";
+const SHEET_NAME = "Urut Abjad";
+const THUMB_LIMIT = 10;
+
+const GENRES_ORDER = [
+  "Action","Comedy","Ecchi","Harem","Adventure",
+  "Drama","Fantasy","Isekai","Sci-Fi","Supernatural","Romance"
+];
+
+const container = document.getElementById('container');
+const statusEl = document.getElementById('status');
+const detailEl = document.getElementById('detail');
+const detailGenreEl = document.getElementById('detailGenre');
+const detailCountEl = document.getElementById('detailCount');
+const detailListEl = document.getElementById('detailList');
+const backBtn = document.getElementById('backBtn');
+const consoleToggle = document.getElementById('consoleToggle');
+const consolePanel = document.getElementById('consolePanel');
+const consoleBody = document.getElementById('consoleBody');
+
+let indexByGenre = {};
+
+function logConsole(msg){
+  const el = document.createElement('div');
+  el.className = 'console-line';
+  const time = new Date().toLocaleTimeString();
+  el.textContent = `[${time}] ${msg}`;
+  consoleBody.appendChild(el);
+  consoleBody.scrollTop = consoleBody.scrollHeight;
+}
+
+consoleToggle.addEventListener('click', () => {
+  const shown = consolePanel.style.display === 'flex';
+  consolePanel.style.display = shown ? 'none' : 'flex';
+});
+
+function sanitizeImageUrl(url){
+  if(!url) return 'https://via.placeholder.com/140x180?text=No+Image';
+  let s = url.trim();
+  if(s.match(/^[a-z0-9\-\.]+\/+/i)) s = 'https://' + s;
+  return s;
+}
+
+function createImgEl(src, alt, w, h){
+  const img = document.createElement('img');
+  img.alt = alt;
+  img.width = w;
+  img.height = h;
+  img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
+
+  const final = sanitizeImageUrl(src);
+  const candidates = [final];
+
+  let m = final.match(/id=([^&]+)/);
+  if(m){
+    const id = m[1];
+    [
+      `https://drive.google.com/uc?export=view&id=${id}`,
+      `https://drive.google.com/uc?export=download&id=${id}`,
+      `https://drive.google.com/thumbnail?id=${id}`,
+      `https://drive.googleusercontent.com/uc?export=download&id=${id}`
+    ].forEach(u=>{ if(!candidates.includes(u)) candidates.push(u); });
+  }
+
+  let i = 0;
+  function tryNext(){
+    if(i >= candidates.length){
+      img.src = 'https://via.placeholder.com/140x180?text=No+Image';
+      logConsole(`SEMUA GAGAL: ${final}`);
+      return;
+    }
+    const url = candidates[i++];
+    const test = new Image();
+    logConsole(`Mencoba: ${url}`);
+    test.onload = ()=>{ img.src = url; logConsole(`OK: ${url}`); };
+    test.onerror = ()=>{ logConsole(`Gagal: ${url}`); tryNext(); };
+    test.src = url;
+  }
+
+  tryNext();
+  return img;
+}
+
+async function fetchSheet(){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`;
+  const res = await fetch(url);
+  const txt = await res.text();
+  const json = JSON.parse(txt.replace(/^[^\(]*\(/,'').replace(/\);$/,''));
+  return json;
+}
+
+function parseSheet(g){
+  const rows = g.table.rows;
+  return rows.map(r=>{
+    return {
+      anime: r.c[1]?.v || "",
+      genre: r.c[2]?.v || "",
+      thumb: r.c[3]?.v || "",
+      type: r.c[4]?.v || ""
+    };
+  });
+}
+
+function buildIndex(data){
+  const idx={};
+  GENRES_ORDER.forEach(g=> idx[g]=[]);
+
+  data.forEach(item=>{
+    const genres = item.genre.split(',').map(s=>s.trim());
+    genres.forEach(g=>{
+      if(!idx[g]) idx[g]=[];
+      idx[g].push(item);
+    });
+  });
+
+  for(const g in idx){
+    idx[g].sort((a,b)=> a.anime.localeCompare(b.anime));
+  }
+  return idx;
+}
+
+function renderGenre(g, list){
+  const sec = document.createElement('section');
+  sec.className='genre-block';
+  const head = document.createElement('div');
+  head.className='genre-header';
+  head.innerHTML = `<div class='genre-title'>${g}</div><div class='genre-actions'><div class='muted'>${list.length} judul</div><button data-g='${g}' class='open-genre-btn'>&gt;</button></div>`;
+
+  const row = document.createElement('div');
+  row.className='thumb-row';
+
+  list.slice(0, THUMB_LIMIT).forEach(it=>{
+    const item = document.createElement('div');
+    item.className='thumb-item';
+    item.appendChild(createImgEl(it.thumb, it.anime, 140,180));
+    const t = document.createElement('div'); t.className='title'; t.textContent = it.anime;
+    const m = document.createElement('div'); m.className='meta'; m.textContent = it.type;
+    item.appendChild(t); item.appendChild(m);
+    row.appendChild(item);
+  });
+
+  sec.appendChild(head);
+  sec.appendChild(row);
+
+  head.querySelector('button').onclick = ()=> openGenre(g);
+  return sec;
+}
+
+function openGenre(g){
+  detailGenreEl.textContent = g;
+  const list = indexByGenre[g] || [];
+  detailCountEl.textContent = list.length + ' judul';
+  detailListEl.innerHTML = '';
+
+  list.forEach(it=>{
+    const li = document.createElement('div');
+    li.className='list-item';
+    const img = createImgEl(it.thumb, it.anime, 90,120);
+    const left = document.createElement('div'); left.appendChild(img);
+    const right = document.createElement('div'); right.innerHTML = `<div class='name'>${it.anime}</div><div class='type'>${it.type}</div>`;
+    li.appendChild(left);
+    li.appendChild(right);
+    detailListEl.appendChild(li);
+  });
+  detailEl.style.display='block';
+}
+
+backBtn.onclick = ()=> detailEl.style.display='none';
+
+(async function init(){
+  statusEl.textContent='Memuat...';
+  const g = await fetchSheet();
+  const data = parseSheet(g);
+  indexByGenre = buildIndex(data);
+  statusEl.textContent='Selesai';
+
+  // Render genres: show GENRES_ORDER first, then any additional genres found in sheet (alphabetical)
+  const extraGenres = Object.keys(indexByGenre).filter(g => !GENRES_ORDER.includes(g) && (indexByGenre[g] || []).length > 0).sort((a,b)=> a.localeCompare(b, undefined, {sensitivity:'base'}));
+  const allGenres = [...GENRES_ORDER, ...extraGenres];
+  allGenres.forEach(g=>{
+    container.appendChild(renderGenre(g, indexByGenre[g]||[]));
+  });
+})();
+</script>
 </body>
 </html>
