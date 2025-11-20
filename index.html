@@ -137,7 +137,7 @@
     width:40px;
     height:40px;
     border-radius:8px;
-    background:#111;
+    background:#ffffff;
     border:1px solid rgba(255,255,255,0.04);
     cursor:pointer;
     font-weight:700;
@@ -359,20 +359,35 @@ function parseSheet(g){
 }
 
 function buildIndex(data){
-  const idx={};
-  GENRES_ORDER.forEach(g=> idx[g]=[]);
+  // Build index by detecting all genres present in sheet data.
+  // Supports separators: comma, slash, pipe, semicolon.
+  const idx = {};
 
-  data.forEach(item=>{
-    const genres = item.genre.split(',').map(s=>s.trim());
-    genres.forEach(g=>{
-      if(!idx[g]) idx[g]=[];
-      idx[g].push(item);
+  data.forEach(item => {
+    if(!item || !item.genre) return;
+    const raw = String(item.genre || '').trim();
+    if(!raw) return;
+    const parts = raw.split(/[,\/|;]+/).map(s => s.trim()).filter(Boolean);
+    parts.forEach(g => {
+      if(!g) return;
+      const gn = g.replace(/\s+/g,' ').trim();
+      if(!idx[gn]) idx[gn] = [];
+      idx[gn].push(item);
     });
   });
 
+  // remove duplicates and sort each genre list
   for(const g in idx){
-    idx[g].sort((a,b)=> a.anime.localeCompare(b.anime));
+    const seen = new Set();
+    idx[g] = idx[g].filter(it => {
+      const key = (it.anime||'').trim().toLowerCase();
+      if(seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+    idx[g].sort((a,b)=> a.anime.localeCompare(b.anime, undefined, {sensitivity:'base'}));
   }
+
   return idx;
 }
 
@@ -433,14 +448,14 @@ backBtn.onclick = ()=> detailEl.style.display='none';
   indexByGenre = buildIndex(data);
   statusEl.textContent='Selesai';
 
-  // Render genres: show GENRES_ORDER first, then any additional genres found in sheet (alphabetical)
-  const extraGenres = Object.keys(indexByGenre).filter(g => !GENRES_ORDER.includes(g) && (indexByGenre[g] || []).length > 0).sort((a,b)=> a.localeCompare(b, undefined, {sensitivity:'base'}));
-  const allGenres = [...GENRES_ORDER, ...extraGenres];
-  // cache ALL_GENRES so search clearing can restore
-  ALL_GENRES = allGenres.slice();
+  // Detect all genres present and sort alphabetically
+  const detected = Object.keys(indexByGenre).filter(k => (indexByGenre[k] || []).length > 0);
+  detected.sort((a,b)=> a.localeCompare(b, undefined, {sensitivity:'base'}));
+  ALL_GENRES = detected.slice();
 
-  allGenres.forEach(g=>{
-    container.appendChild(renderGenre(g, indexByGenre[g]||[]));
+  // Render genres in alphabetical order
+  ALL_GENRES.forEach(gname => {
+    container.appendChild(renderGenre(gname, indexByGenre[gname] || []));
   });
 })();
 </script>
