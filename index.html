@@ -191,7 +191,9 @@
   <header>
     <div>
       <h1>Anime List</h1>
-      
+      <div style="margin-top:8px;">
+        <input id="searchInput" type="search" placeholder="Cari berdasarkan Nama atau Tipe..." style="width:320px; max-width:60vw; padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--accent);">
+      </div>
     </div>
     <div class="small muted" id="status">Memuat data...</div>
   </header>
@@ -239,6 +241,39 @@ const backBtn = document.getElementById('backBtn');
 const consoleToggle = document.getElementById('consoleToggle');
 const consolePanel = document.getElementById('consolePanel');
 const consoleBody = document.getElementById('consoleBody');
+const searchInput = document.getElementById('searchInput');
+let allItems = []; // flat list of all items
+let ALL_GENRES = []; // cached genres order + extras
+
+function showSearchResults(q){
+  const ql = String(q||'').trim().toLowerCase();
+  container.innerHTML = '';
+  if(!ql){
+    // restore full genre view
+    ALL_GENRES.forEach(g=> container.appendChild(renderGenre(g, indexByGenre[g]||[])));
+    return;
+  }
+  // find matches by name or type
+  const matches = allItems.filter(it => (it.anime||'').toLowerCase().includes(ql) || (it.type||'').toLowerCase().includes(ql));
+  if(matches.length === 0){
+    const p = document.createElement('div'); p.className='muted'; p.textContent = 'Tidak ada hasil untuk "' + q + '"'; container.appendChild(p); return;
+  }
+  // render matches as simple list
+  matches.forEach(it=>{
+    const li = document.createElement('div'); li.className='list-item';
+    const img = createImgEl(it.thumb, it.anime, 90,120);
+    const left = document.createElement('div'); left.appendChild(img);
+    const right = document.createElement('div'); right.innerHTML = `<div class='name'>${it.anime}</div><div class='type'>${it.type}</div>`;
+    li.appendChild(left); li.appendChild(right);
+    container.appendChild(li);
+  });
+}
+
+if(searchInput){
+  searchInput.addEventListener('input', (e)=> showSearchResults(e.target.value));
+  // allow Esc to clear
+  searchInput.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') { searchInput.value=''; showSearchResults(''); }});
+}
 
 let indexByGenre = {};
 
@@ -393,12 +428,17 @@ backBtn.onclick = ()=> detailEl.style.display='none';
   statusEl.textContent='Memuat...';
   const g = await fetchSheet();
   const data = parseSheet(g);
+  // store flat items for search
+  allItems = data.slice();
   indexByGenre = buildIndex(data);
   statusEl.textContent='Selesai';
 
   // Render genres: show GENRES_ORDER first, then any additional genres found in sheet (alphabetical)
   const extraGenres = Object.keys(indexByGenre).filter(g => !GENRES_ORDER.includes(g) && (indexByGenre[g] || []).length > 0).sort((a,b)=> a.localeCompare(b, undefined, {sensitivity:'base'}));
   const allGenres = [...GENRES_ORDER, ...extraGenres];
+  // cache ALL_GENRES so search clearing can restore
+  ALL_GENRES = allGenres.slice();
+
   allGenres.forEach(g=>{
     container.appendChild(renderGenre(g, indexByGenre[g]||[]));
   });
